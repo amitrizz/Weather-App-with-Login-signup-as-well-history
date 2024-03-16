@@ -139,7 +139,7 @@
 
     <script>
       function FetchHistoryData() {
-        const apiUrl = "http://localhost:3000/history";
+        const apiUrl = "https://weather-app-with-login-signup-as-well-hs28.onrender.com/history";
         fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -167,7 +167,7 @@
         inputField.value = "";
 
         // Add your logic here, such as making an API call, processing the data, etc.
-        const apiUrl = "http://localhost:3000/fetchData";
+        const apiUrl = `https://weather-app-with-login-signup-as-well-hs28.onrender.com/fetchData`;
         const requestData = {
           city: inputData,
         };
