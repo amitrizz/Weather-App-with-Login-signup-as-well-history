@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        display: block;
+        width: 100%;
+        background: #c9cac9;
+        border-radius: 0px;
+      }
+      .contain {
+        /* background: #411e1e; */
+        /* padding-top: 20px; */
+        display: block;
+        box-shadow: 10px 10px 10px 10px rgba(30, 31, 30, 0.4);
+        margin-top: 80px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .navbar {
+        background: #8ecbfd;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        padding-left: 40px;
+        padding-right: 40px;
+        /* align-items: center; */
+      }
+      h1 {
+        display: inline;
+        /* background: #000; */
+      }
+      .contain button {
+        width: 200px;
+        border-radius: 5px;
+        border: none;
+        padding: 15px;
+        background-color: cornflowerblue;
+        font-weight: bolder;
+        box-shadow: 2px 3px 25px 2px rgba(30, 31, 30, 0.4);
+        font-size: 20px;
+      }
+      .navbar form button {
+        width: 100px;
+        font-size: larger;
+        background: transparent;
+        /* border: 1px solid rgba(121, 148, 163, 0.151); */
+        border: none;
+        font-weight: bolder;
+        cursor: pointer;
+        /* height: 30px; */
+      }
+      .navbar button {
+        width: 100px;
+        font-size: larger;
+        background: transparent;
+        /* border: 1px solid rgba(121, 148, 163, 0.151); */
+        border: none;
+        font-weight: bolder;
+        cursor: pointer;
+        /* height: 30px; */
+      }
+      .Containbox {
+        width: 400px;
+        /* background: #c58d8d; */
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 10px;
+        height: 20vh;
+      }
+      .Containbox input {
+        border-top: none;
+        border-right: none;
+        background: transparent;
+        padding: 5px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .Containbox input:active {
+        border-top: none;
+        border-right: none;
+      }
+      .Containbox label {
+        font-weight: bold;
+      }
+      .details {
+        /* background: #cc5d5d; */
+        /* height: 30vh; */
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #weatherContainer {
+        height: 25vh;
+        background-color: bisque;
+        padding-left: 12px;
+        padding-right: 12px;
+        box-shadow: 5px 5px 10px 1px grey;
+        border-radius: 3px;
+        margin-top: 10px;
+        padding-top: 12px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body style="display: block">
+    <div class="navbar">
+      <h1>Welcome</h1>
+      <button onclick="FetchHistoryData()">History</button>
+
+      <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+    <div class="contain">
+      <button onclick="FetchData()">Check Wheather</button>
+      <div class="Containbox" style="width: 400px">
+        <input
+          type="text"
+          name="city"
+          id="city"
+          placeholder="Enter City Name ..."
+        />
+      </div>
+    </div>
+    <div class="details" >
+      <div id="weatherContainer">
+        <!-- Weather data will be displayed here -->
+      </div>
+    </div>
+
+    <script>
+      function FetchHistoryData() {
+        const apiUrl = "http://localhost:3000/history";
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Add other headers if neede
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("API response:", data);
+            displayHistoryData(data.data);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      }
+      function FetchData() {
+        const inputField = document.getElementById("city");
+        const inputData = inputField.value;
+        inputField.value = "";
+
+        // Add your logic here, such as making an API call, processing the data, etc.
+        const apiUrl = "http://localhost:3000/fetchData";
+        const requestData = {
+          city: inputData,
+        };
+        console.log(requestData);
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Add other headers if needed
+          },
+          body: JSON.stringify(requestData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("API response:", data);
+            displayWeatherData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      }
+
+      function displayHistoryData(data) {
+        const HistoryContainer = document.getElementById("weatherContainer");
+        HistoryContainer.innerText = "";
+        HistoryContainer.style.display = "block";
+        for (let index = data.length-1; index >=0; index--) {
+          // const element = data[index];
+          console.log(data[index]);
+          const history = document.createElement("div");
+          history.innerHTML = `${data.length-index} <b style="margin-right: 10px;"> ${data[index].city} </b> ${data[index].time}`;
+          HistoryContainer.appendChild(history)
+        }
+      }
+
+      function displayWeatherData(weatherData) {
+        const weatherContainer = document.getElementById("weatherContainer");
+        weatherContainer.style.display = "block";
+
+        // Create HTML elements to display the weather data
+        const descriptionElement = document.createElement("p");
+        descriptionElement.textContent = `Description: ${weatherData.des}`;
+
+        const humidityElement = document.createElement("p");
+        humidityElement.textContent = `Humidity: ${weatherData.humidity}`;
+
+        const iconElement = document.createElement("img");
+        iconElement.src = weatherData.iconUrl;
+        iconElement.alt = "Weather Icon";
+
+        const mainElement = document.createElement("p");
+        mainElement.textContent = `Main: ${weatherData.main}`;
+
+        const tempElement = document.createElement("p");
+        tempElement.textContent = `Temperature: ${Math.round(
+          weatherData.temp - 273.15
+        )} C`;
+
+        // Append elements to the container
+        weatherContainer.innerHTML = ""; // Clear previous content
+        weatherContainer.appendChild(descriptionElement);
+        weatherContainer.appendChild(humidityElement);
+        weatherContainer.appendChild(iconElement);
+        weatherContainer.appendChild(mainElement);
+        weatherContainer.appendChild(tempElement);
+      }
+    </script>
+  </body>
+</html>
