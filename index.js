@@ -67,7 +67,7 @@ app.post("/login", async (req, res) => {
     // console.log(user);
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '5h' });
 
-    console.log(token);
+    // console.log(token);
 
     if (!user) {
         console.log("Already Exist");

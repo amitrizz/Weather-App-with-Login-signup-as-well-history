@@ -20,7 +20,7 @@ body{
 }
 .container:hover{
     /* width: 35%; */
-    height: 60vh;
+    /* height: 60vh; */
     box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, 0.2);
 }
 h1{
@@ -42,6 +42,7 @@ form{
 .box input{
     float: right;
     margin-right: 20px;
+    background: transparent;
     /* border: none; */
     border-right: none;
     border-top: none;
