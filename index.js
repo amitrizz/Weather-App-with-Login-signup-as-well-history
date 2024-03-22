@@ -108,6 +108,7 @@ app.post("/logout", (req, res) => {
 app.post("/history", async (req, res) => {
     // console.log(req.cookies.token);
     const token = req.cookies.token;
+    // console.log(token);
     let email;
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
@@ -118,9 +119,62 @@ app.post("/history", async (req, res) => {
         }
     });
     const user = await User.findOne({ email: email })
+    // console.log(user);
+
+
+    res.json({ data: user.history })
+})
+
+app.delete("/delete", async (req, res) => {
+    const { index } = req.body;
+    console.log(index);
+    const token = req.cookies.token;
+    console.log(token);
+    let email;
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        if (err) {
+            console.error('Token verification failed:', err.message);
+        } else {
+            // console.log('Token decoded:', );
+            email = decoded.user
+        }
+    });
+
+
+//    await User.updateOne(
+//     { email: email }, // Match document by _id
+//     { $pull: { "history": null } } // Pull null values from the arrayField array
+//   );
+
+
+    const data = await User.findOne({ email: email })
+    // console.log(data.history.length);
+    let idx = data.history.length - index;
+    // console.log(data.history);
+    let updatehistroy=data.history.filter((el,index)=>idx!==index);
+    // console.log(updatehistroy);
+    // console.log(email);
+    await User.updateOne(
+        { email: email }, // Match document by _id
+        { $set: { "history": updatehistroy } } // Set the arrayField to the new array
+      );
+    // await User.updateOne(
+    //     { email: email }, // Match document by _id
+    //     [
+    //         {
+    //             $set: {
+    //                 [`history.${idx}`]: null // Set the element at the specified index to null
+    //             }
+    //         },
+    //         {
+    //             $pull: {
+    //                 "history": null // Pull null values from the arrayField array
+    //             }
+    //         }
+    //     ]
+    // );
+    const user=await User.findOne({email:email});
     console.log(user);
-
-
     res.json({ data: user.history })
 })
 
@@ -137,12 +191,12 @@ app.post("/fetchData", async (req, res) => {
         }
     });
     // const user = await User.findOne({  })
-    
+
     try {
         // Update the user document by pushing the new hobby to the hobbies array
         const result = await User.updateOne(
             { email: email }, // Filter for the user document
-            { $push: { history: {city:city,time:Date()} } } // Add the new hobby to the hobbies array
+            { $push: { history: { city: city, time: Date() } } } // Add the new hobby to the hobbies array
         );
         console.log('Hobby added successfully:', result);
     } catch (err) {

@@ -131,7 +131,7 @@
         />
       </div>
     </div>
-    <div class="details" >
+    <div class="details">
       <div id="weatherContainer">
         <!-- Weather data will be displayed here -->
       </div>
@@ -139,7 +139,7 @@
 
     <script>
       function FetchHistoryData() {
-        const apiUrl = "https://weather-app-with-login-signup-as-well-hs28.onrender.com/history";
+        const apiUrl = `https://weather-app-with-login-signup-as-well-hs28.onrender.com/history`;
         fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -167,11 +167,7 @@
         inputField.value = "";
 
         // Add your logic here, such as making an API call, processing the data, etc.
-<<<<<<< HEAD
         const apiUrl = `https://weather-app-with-login-signup-as-well-hs28.onrender.com/fetchData`;
-=======
-        const apiUrl = "https://weather-app-with-login-signup-as-well-hs28.onrender.com/fetchData";
->>>>>>> deb05f0fe47d46f639183a250eed09645f14b854
         const requestData = {
           city: inputData,
         };
@@ -199,17 +195,60 @@
             console.error("Error fetching data:", error);
           });
       }
+      function Delete(index) {
+        // let array = [1, 2, 3, 4, 5];
+        console.log("yes working", index);
 
+        const apiUrl = `https://weather-app-with-login-signup-as-well-hs28.onrender.com/delete`;
+        const requestData = {
+          index: index,
+        };
+        console.log(requestData);
+
+        fetch(apiUrl, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Add other headers if needed
+          },
+          body: JSON.stringify(requestData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            // console.log("hello");
+            return response.json();
+          })
+          .then((data) => {
+            console.log("API Updated response: ", data);
+            alert("Data Delete Sucessfully")
+            location.reload()
+            // displayHistoryData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+        // data = data.filter((element, idx) => idx !== index);
+        // displayHistoryData(data)
+      }
       function displayHistoryData(data) {
+        // console.log("yes this part is called");
         const HistoryContainer = document.getElementById("weatherContainer");
         HistoryContainer.innerText = "";
+        // HistoryContainer.style.display="none";
         HistoryContainer.style.display = "block";
-        for (let index = data.length-1; index >=0; index--) {
+        console.log(data);
+        for (let index = data.length - 1; index >= 0; index--) {
           // const element = data[index];
           console.log(data[index]);
           const history = document.createElement("div");
-          history.innerHTML = `${data.length-index} <b style="margin-right: 10px;"> ${data[index].city} </b> ${data[index].time}`;
-          HistoryContainer.appendChild(history)
+          history.innerHTML = `${
+            data.length - index
+          } <b style="margin-right: 10px;"> ${data[index].city} </b> ${
+            data[index].time
+          } <button onclick='Delete(${index})'>Delete</button>`;
+          HistoryContainer.appendChild(history);
         }
       }
 
